@@ -76,14 +76,20 @@ export default function Trends() {
             // Oldest -> newest so the line reads left to right.
             const ordered = [...workouts].reverse();
 
-            // Tally weight points per exercise name; chart the most-logged one.
+            // One top-set (heaviest) point per exercise per workout; chart the
+            // most-logged exercise.
             const byName = new Map<string, number[]>();
             for (const wk of ordered) {
-                for (const ex of wk.exercises ?? []) {
-                    if (ex.weight_kg == null) continue;
-                    const arr = byName.get(ex.name) ?? [];
-                    arr.push(ex.weight_kg);
-                    byName.set(ex.name, arr);
+                for (const log of wk.logs ?? []) {
+                    const name = log.exercise?.name;
+                    if (!name) continue;
+                    const weights = (log.sets ?? [])
+                        .map((s) => s.weight)
+                        .filter((w): w is number => w != null);
+                    if (weights.length === 0) continue;
+                    const arr = byName.get(name) ?? [];
+                    arr.push(Math.max(...weights));
+                    byName.set(name, arr);
                 }
             }
             let best: [string, number[]] | null = null;

@@ -67,7 +67,7 @@ export default function Dashboard() {
                                                 {new Date(
                                                     w.performed_at,
                                                 ).toLocaleDateString()}{" "}
-                                                · {w.exercises?.length ?? 0}{" "}
+                                                · {w.logs?.length ?? 0}{" "}
                                                 exercises
                                             </span>
                                         </li>

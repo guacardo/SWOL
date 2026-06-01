@@ -55,17 +55,38 @@ export async function initAuth() {
     const { data } = await supabase!.auth.getSession();
     setUser(mapUser(data.session));
     setReady(true);
+    // Keeps the store in sync across sign-in/out, token refresh, and tabs.
     supabase!.auth.onAuthStateChange((_event, next) => setUser(mapUser(next)));
 }
 
 export type OAuthProvider = "google" | "github";
 
-/** Real OAuth (non-mock mode). */
-export async function signInWith(provider: OAuthProvider) {
-    return supabase!.auth.signInWithOAuth({
+/**
+ * Email/password sign-in (the primary path locally; signups auto-confirm).
+ * Returns an error message on failure, null on success — the session arrives
+ * via onAuthStateChange.
+ */
+export async function signInPassword(email: string, password: string): Promise<string | null> {
+    const { error } = await supabase!.auth.signInWithPassword({ email, password });
+    return error?.message ?? null;
+}
+
+/** Email/password sign-up. Same return contract as signInPassword. */
+export async function signUpPassword(email: string, password: string): Promise<string | null> {
+    const { error } = await supabase!.auth.signUp({ email, password });
+    return error?.message ?? null;
+}
+
+/**
+ * OAuth sign-in. Providers aren't configured against the local stack, so this
+ * surfaces a friendly message instead of throwing. Wired for prod later.
+ */
+export async function signInWith(provider: OAuthProvider): Promise<string | null> {
+    const { error } = await supabase!.auth.signInWithOAuth({
         provider,
         options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
+    return error?.message ?? null;
 }
 
 /** Mock-mode dev sign-in: fabricate a local user, no network. */
