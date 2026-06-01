@@ -1,0 +1,90 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 720px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.title {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+}
+
+.sub,
+.muted {
+    margin: 0;
+    color: var(--swl-color_text-muted);
+}
+
+.card {
+    background: var(--swl-color_surface);
+    border: 1px solid var(--swl-color_border);
+    border-radius: var(--swl-radius);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.email {
+    margin: 0;
+    font-weight: 600;
+}
+
+.cta {
+    align-self: flex-start;
+    background: var(--swl-color_accent);
+    color: #fff;
+    font-weight: 700;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--swl-radius-sm);
+}
+
+.linkBtn {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--swl-color_text-muted);
+    text-decoration: underline;
+    font-size: 0.85rem;
+}
+
+.recent {
+    display: flex;
+    flex-direction: column;
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    background: var(--swl-color_surface);
+    border: 1px solid var(--swl-color_border);
+    border-radius: var(--swl-radius-sm);
+    padding: 0.75rem 1rem;
+}
+
+.itemTitle {
+    font-weight: 600;
+}

@@ -1,0 +1,84 @@
+/*
+ * SWOL theme tokens.
+ * Pattern mirrors the peer projects: every theme is a `[data-theme]` block of
+ * `--swl-*` custom properties. The theme store sets `data-theme` on <html>.
+ * Components and the <canvas> trend painter read ONLY these vars (never raw
+ * hex) so a theme swap repaints everything for free.
+ */
+
+:root,
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    /* Type & geometry (shared defaults; themes may override) */
+    --swl-font_primary: "Inter", system-ui, -apple-system, sans-serif;
+    --swl-radius: 12px;
+    --swl-radius-sm: 8px;
+
+    /* Surfaces */
+    --swl-color_bg: #0d0d0f;
+    --swl-color_surface: #16161a;
+    --swl-color_surface-2: #1f1f25;
+    --swl-color_border: #2a2a31;
+
+    /* Text */
+    --swl-color_text: #f2f2f5;
+    --swl-color_text-muted: #9a9aa5;
+
+    /* Brand / accents */
+    --swl-color_accent: #ff5a3c;
+    --swl-color_accent-hover: #ff7457;
+    --swl-color_success: #3ddc97;
+    --swl-color_danger: #ef4444;
+
+    /* Data viz ramp for canvas/SVG trend painting */
+    --swl-chart_grid: #2a2a31;
+    --swl-chart_line: #ff5a3c;
+    --swl-chart_line-2: #3ddc97;
+    --swl-chart_fill: rgba(255, 90, 60, 0.15);
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --swl-color_bg: #f6f6f8;
+    --swl-color_surface: #ffffff;
+    --swl-color_surface-2: #eeeef2;
+    --swl-color_border: #dcdce3;
+
+    --swl-color_text: #16161a;
+    --swl-color_text-muted: #66666f;
+
+    --swl-color_accent: #e8442a;
+    --swl-color_accent-hover: #c8351f;
+    --swl-color_success: #16a571;
+    --swl-color_danger: #dc2626;
+
+    --swl-chart_grid: #e2e2e8;
+    --swl-chart_line: #e8442a;
+    --swl-chart_line-2: #16a571;
+    --swl-chart_fill: rgba(232, 68, 42, 0.12);
+}
+
+/* A loud "leg day" theme to prove the system out. */
+:root[data-theme="iron"] {
+    color-scheme: dark;
+
+    --swl-color_bg: #101418;
+    --swl-color_surface: #18202a;
+    --swl-color_surface-2: #22303d;
+    --swl-color_border: #2f4150;
+
+    --swl-color_text: #e9f1f7;
+    --swl-color_text-muted: #8aa0b0;
+
+    --swl-color_accent: #ffd23f;
+    --swl-color_accent-hover: #ffe072;
+    --swl-color_success: #5ad1c0;
+    --swl-color_danger: #ff6b6b;
+
+    --swl-chart_grid: #2f4150;
+    --swl-chart_line: #ffd23f;
+    --swl-chart_line-2: #5ad1c0;
+    --swl-chart_fill: rgba(255, 210, 63, 0.15);
+}

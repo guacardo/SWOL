@@ -1,0 +1,41 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    font-family: var(--swl-font_primary);
+    color: var(--swl-color_text);
+    background: var(--swl-color_bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+#root {
+    min-height: 100dvh;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* Respect the iOS home indicator / notch when installed as a PWA. */
+:root {
+    --swl-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --swl-safe-top: env(safe-area-inset-top, 0px);
+    --swl-nav-h: 56px;
+}

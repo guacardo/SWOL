@@ -1,0 +1,107 @@
+.shell {
+    display: grid;
+    min-height: 100dvh;
+    /* Mobile-first: content fills, nav is a bottom bar (see below). */
+    grid-template-rows: 1fr auto;
+}
+
+.main {
+    padding: 1.25rem;
+    padding-bottom: calc(1.25rem + var(--swl-safe-bottom));
+    overflow-y: auto;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.25rem;
+    flex: none;
+    height: calc(var(--swl-nav-h) + var(--swl-safe-bottom));
+    background: var(--swl-color_surface);
+    border-top: 1px solid var(--swl-color_border);
+    padding: 0 0.5rem var(--swl-safe-bottom);
+}
+
+.brand {
+    display: none;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--swl-color_accent);
+}
+
+.navList {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex: 1;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navLink {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--swl-radius-sm);
+    font-size: 0.7rem;
+    color: var(--swl-color_text-muted);
+}
+
+.navLink.active {
+    color: var(--swl-color_accent);
+    background: var(--swl-color_surface-2);
+}
+
+.themeBtn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--swl-color_border);
+    border-radius: var(--swl-radius-sm);
+    background: var(--swl-color_surface-2);
+    color: var(--swl-color_text-muted);
+}
+
+/* Desktop: nav becomes a left rail. */
+@media (min-width: 768px) {
+    .shell {
+        grid-template-rows: none;
+        grid-template-columns: 220px 1fr;
+    }
+
+    .nav {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        height: auto;
+        border-top: none;
+        border-right: 1px solid var(--swl-color_border);
+        padding: 1.25rem 0.75rem;
+    }
+
+    .brand {
+        display: block;
+        font-size: 1.4rem;
+        padding: 0.5rem 0.75rem 1rem;
+    }
+
+    .navList {
+        flex-direction: column;
+        align-items: stretch;
+        flex: 1;
+    }
+
+    .navLink {
+        flex-direction: row;
+        gap: 0.75rem;
+        padding: 0.7rem 0.75rem;
+        font-size: 0.95rem;
+    }
+}

@@ -1,0 +1,43 @@
+.page {
+    display: grid;
+    place-items: center;
+    min-height: 70dvh;
+}
+
+.card {
+    width: min(360px, 100%);
+    background: var(--swl-color_surface);
+    border: 1px solid var(--swl-color_border);
+    border-radius: var(--swl-radius);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+}
+
+.title {
+    margin: 0;
+    color: var(--swl-color_accent);
+    letter-spacing: 0.08em;
+}
+
+.sub {
+    margin: 0 0 0.75rem;
+    color: var(--swl-color_text-muted);
+}
+
+.provider {
+    padding: 0.85rem 1rem;
+    border-radius: var(--swl-radius-sm);
+    border: 1px solid var(--swl-color_border);
+    background: var(--swl-color_surface-2);
+    color: var(--swl-color_text);
+    font-weight: 600;
+}
+
+.fine {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    color: var(--swl-color_text-muted);
+}
