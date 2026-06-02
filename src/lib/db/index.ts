@@ -8,4 +8,11 @@ import { supabaseDb } from "./supabase";
  */
 export const db = USE_MOCK ? localDb : supabaseDb;
 
-export type { NewWorkout, NewExerciseLog, NewSet, ExerciseInput } from "./local";
+export type {
+    NewWorkout,
+    NewExerciseLog,
+    NewSet,
+    ExerciseInput,
+    WorkoutPatch,
+    ProfilePatch,
+} from "./local";

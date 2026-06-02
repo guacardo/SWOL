@@ -1,7 +1,7 @@
-import type { Workout, ExerciseLog, Exercise } from "@/lib/types";
+import type { Workout, ExerciseLog, Exercise, Profile } from "@/lib/types";
 import { supabase } from "@/supabaseClient";
 import { normalizeName } from "./util";
-import type { NewWorkout, ExerciseInput } from "./local";
+import type { NewWorkout, ExerciseInput, WorkoutPatch, ProfilePatch } from "./local";
 
 /**
  * Supabase-backed data layer. Same async surface as localDb so views are
@@ -174,5 +174,63 @@ export const supabaseDb = {
             .eq("id", id)
             .eq("owner_id", userId);
         if (error) throw error;
+    },
+
+    /* --- single workout read / metadata edit / delete --- */
+
+    async getWorkout(userId: string, id: string): Promise<Workout | null> {
+        const { data, error } = await client()
+            .from("workouts")
+            .select(WORKOUT_SELECT)
+            .eq("id", id)
+            .eq("user_id", userId)
+            .maybeSingle();
+        if (error) throw error;
+        return data ? sortWorkout(data as unknown as Workout) : null;
+    },
+
+    async updateWorkout(userId: string, id: string, patch: WorkoutPatch): Promise<Workout> {
+        const { error } = await client()
+            .from("workouts")
+            .update(patch)
+            .eq("id", id)
+            .eq("user_id", userId);
+        if (error) throw error;
+        const updated = await this.getWorkout(userId, id);
+        if (!updated) throw new Error("Workout not found after update");
+        return updated;
+    },
+
+    async deleteWorkout(userId: string, id: string): Promise<void> {
+        // FK cascade removes exercise_logs + sets.
+        const { error } = await client()
+            .from("workouts")
+            .delete()
+            .eq("id", id)
+            .eq("user_id", userId);
+        if (error) throw error;
+    },
+
+    /* --- profile read / edit (owner-only via RLS; dob stays private) --- */
+
+    async getProfile(userId: string): Promise<Profile> {
+        const { data, error } = await client()
+            .from("profiles")
+            .select("*")
+            .eq("id", userId)
+            .single();
+        if (error) throw error;
+        return data as unknown as Profile;
+    },
+
+    async updateProfile(userId: string, patch: ProfilePatch): Promise<Profile> {
+        const { data, error } = await client()
+            .from("profiles")
+            .update(patch)
+            .eq("id", userId)
+            .select("*")
+            .single();
+        if (error) throw error;
+        return data as unknown as Profile;
     },
 };

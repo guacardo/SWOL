@@ -4,6 +4,7 @@ import type {
     WorkoutSet,
     Exercise,
     ExerciseModality,
+    Profile,
 } from "@/lib/types";
 import { normalizeName } from "./util";
 
@@ -29,6 +30,20 @@ export interface NewWorkout {
     exercises: NewExerciseLog[];
 }
 
+/** Metadata-only edits to a logged workout (set editing is a separate flow). */
+export interface WorkoutPatch {
+    title?: string | null;
+    performed_at?: string;
+    notes?: string | null;
+}
+
+/** Editable profile fields. dob is private (owner-only via RLS). */
+export interface ProfilePatch {
+    display_name?: string;
+    avatar_url?: string | null;
+    dob?: string | null;
+}
+
 /** Editable catalog fields, used for both create and update in the CRUD panel. */
 export interface ExerciseInput {
     name: string;
@@ -43,6 +58,7 @@ export interface ExerciseInput {
 
 const workoutsKey = (userId: string) => `swl-workouts:${userId}`;
 const catalogKey = (userId: string) => `swl-exercises:${userId}`;
+const profileKey = (userId: string) => `swl-profile:${userId}`;
 
 function readWorkouts(userId: string): Workout[] {
     const raw = localStorage.getItem(workoutsKey(userId));
@@ -210,5 +226,48 @@ export const localDb = {
             userId,
             catalog.filter((e) => e.id !== id),
         );
+    },
+
+    /* --- single workout read / metadata edit / delete --- */
+
+    async getWorkout(userId: string, id: string): Promise<Workout | null> {
+        return readWorkouts(userId).find((w) => w.id === id) ?? null;
+    },
+
+    async updateWorkout(userId: string, id: string, patch: WorkoutPatch): Promise<Workout> {
+        const all = readWorkouts(userId);
+        const idx = all.findIndex((w) => w.id === id);
+        if (idx === -1) throw new Error("Workout not found");
+        all[idx] = { ...all[idx], ...patch };
+        persistWorkouts(userId, all);
+        return all[idx];
+    },
+
+    async deleteWorkout(userId: string, id: string): Promise<void> {
+        persistWorkouts(
+            userId,
+            readWorkouts(userId).filter((w) => w.id !== id),
+        );
+    },
+
+    /* --- profile read / edit (mock: synthesize then persist) --- */
+
+    async getProfile(userId: string): Promise<Profile> {
+        const raw = localStorage.getItem(profileKey(userId));
+        if (raw) return JSON.parse(raw) as Profile;
+        return {
+            id: userId,
+            display_name: "Lifter",
+            avatar_url: null,
+            dob: null,
+            created_at: new Date().toISOString(),
+        };
+    },
+
+    async updateProfile(userId: string, patch: ProfilePatch): Promise<Profile> {
+        const current = await this.getProfile(userId);
+        const updated: Profile = { ...current, ...patch };
+        localStorage.setItem(profileKey(userId), JSON.stringify(updated));
+        return updated;
     },
 };
