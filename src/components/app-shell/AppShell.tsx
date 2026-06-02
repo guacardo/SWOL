@@ -1,12 +1,13 @@
 import { type ParentProps, For } from "solid-js";
 import { A } from "@solidjs/router";
-import { Dumbbell, ChartLine, Users, Plus, Palette } from "lucide-solid";
+import { Dumbbell, ChartLine, Users, Plus, Palette, Library } from "lucide-solid";
 import { cycleTheme } from "@/stores/theme.store";
 import styles from "./AppShell.module.css";
 
 const NAV = [
     { href: "/", label: "Today", icon: Dumbbell },
     { href: "/log", label: "Log", icon: Plus },
+    { href: "/exercises", label: "Exercises", icon: Library },
     { href: "/trends", label: "Trends", icon: ChartLine },
     { href: "/friends", label: "Friends", icon: Users },
 ];

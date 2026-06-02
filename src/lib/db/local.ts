@@ -1,4 +1,10 @@
-import type { Workout, ExerciseLog, WorkoutSet, Exercise } from "@/lib/types";
+import type {
+    Workout,
+    ExerciseLog,
+    WorkoutSet,
+    Exercise,
+    ExerciseModality,
+} from "@/lib/types";
 import { normalizeName } from "./util";
 
 /* --- input (draft) shapes coming from the logging UI --- */
@@ -21,6 +27,18 @@ export interface NewWorkout {
     title: string | null;
     performed_at?: string;
     exercises: NewExerciseLog[];
+}
+
+/** Editable catalog fields, used for both create and update in the CRUD panel. */
+export interface ExerciseInput {
+    name: string;
+    modality: ExerciseModality;
+    muscle_group: string | null;
+    equipment: string | null;
+    unit: string;
+    increment: number | null;
+    min_value: number | null;
+    max_value: number | null;
 }
 
 const workoutsKey = (userId: string) => `swl-workouts:${userId}`;
@@ -140,5 +158,57 @@ export const localDb = {
         all.push(workout);
         persistWorkouts(userId, all);
         return workout;
+    },
+
+    /* --- exercise catalog CRUD (mock: every local row is the user's own) --- */
+
+    async listExercises(userId: string): Promise<Exercise[]> {
+        return readCatalog(userId).sort((a, b) => a.name.localeCompare(b.name));
+    },
+
+    async createExercise(userId: string, input: ExerciseInput): Promise<Exercise> {
+        const catalog = readCatalog(userId);
+        const exercise: Exercise = {
+            id: crypto.randomUUID(),
+            owner_id: userId,
+            name: input.name,
+            normalized_name: normalizeName(input.name),
+            modality: input.modality,
+            muscle_group: input.muscle_group,
+            equipment: input.equipment,
+            unit: input.unit,
+            increment: input.increment,
+            min_value: input.min_value,
+            max_value: input.max_value,
+            is_stub: false,
+            created_at: new Date().toISOString(),
+        };
+        catalog.push(exercise);
+        persistCatalog(userId, catalog);
+        return exercise;
+    },
+
+    async updateExercise(userId: string, id: string, input: ExerciseInput): Promise<Exercise> {
+        const catalog = readCatalog(userId);
+        const idx = catalog.findIndex((e) => e.id === id);
+        if (idx === -1) throw new Error("Exercise not found");
+        // Editing promotes a stub to a fully-authored row.
+        const updated: Exercise = {
+            ...catalog[idx],
+            ...input,
+            normalized_name: normalizeName(input.name),
+            is_stub: false,
+        };
+        catalog[idx] = updated;
+        persistCatalog(userId, catalog);
+        return updated;
+    },
+
+    async deleteExercise(userId: string, id: string): Promise<void> {
+        const catalog = readCatalog(userId);
+        persistCatalog(
+            userId,
+            catalog.filter((e) => e.id !== id),
+        );
     },
 };

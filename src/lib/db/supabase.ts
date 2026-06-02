@@ -1,7 +1,7 @@
-import type { Workout, ExerciseLog } from "@/lib/types";
+import type { Workout, ExerciseLog, Exercise } from "@/lib/types";
 import { supabase } from "@/supabaseClient";
 import { normalizeName } from "./util";
-import type { NewWorkout } from "./local";
+import type { NewWorkout, ExerciseInput } from "./local";
 
 /**
  * Supabase-backed data layer. Same async surface as localDb so views are
@@ -128,5 +128,51 @@ export const supabaseDb = {
             .single();
         if (error) throw error;
         return sortWorkout(data as unknown as Workout);
+    },
+
+    /* --- exercise catalog CRUD --- */
+
+    async listExercises(_userId: string): Promise<Exercise[]> {
+        // RLS returns globals (owner_id NULL) + the user's own rows.
+        const { data, error } = await client()
+            .from("exercises")
+            .select("*")
+            .order("name");
+        if (error) throw error;
+        return data as unknown as Exercise[];
+    },
+
+    async createExercise(userId: string, input: ExerciseInput): Promise<Exercise> {
+        // normalized_name is a generated column — never sent.
+        const { data, error } = await client()
+            .from("exercises")
+            .insert({ owner_id: userId, is_stub: false, ...input })
+            .select("*")
+            .single();
+        if (error) throw error;
+        return data as unknown as Exercise;
+    },
+
+    async updateExercise(userId: string, id: string, input: ExerciseInput): Promise<Exercise> {
+        // owner_id filter + RLS both guarantee globals stay read-only.
+        // Editing promotes a stub to a fully-authored row.
+        const { data, error } = await client()
+            .from("exercises")
+            .update({ is_stub: false, ...input })
+            .eq("id", id)
+            .eq("owner_id", userId)
+            .select("*")
+            .single();
+        if (error) throw error;
+        return data as unknown as Exercise;
+    },
+
+    async deleteExercise(userId: string, id: string): Promise<void> {
+        const { error } = await client()
+            .from("exercises")
+            .delete()
+            .eq("id", id)
+            .eq("owner_id", userId);
+        if (error) throw error;
     },
 };
