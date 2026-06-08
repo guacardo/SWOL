@@ -10,10 +10,13 @@
 :root[data-theme="dark"] {
     color-scheme: dark;
 
-    /* Type & geometry (shared defaults; themes may override) */
-    --swl-font_primary: "Inter", system-ui, -apple-system, sans-serif;
+    /* Geometry (shared defaults; themes may override) */
     --swl-radius: 12px;
     --swl-radius-sm: 8px;
+    /* Font roles are set by [data-typeset] (below), NOT by color theme, so the
+       two axes are independent. --swl-font_primary kept as a body alias for any
+       legacy reference. */
+    --swl-font_primary: var(--swl-font_body);
 
     /* Surfaces */
     --swl-color_bg: #0d0d0f;
@@ -81,4 +84,20 @@
     --swl-chart_line: #ffd23f;
     --swl-chart_line-2: #5ad1c0;
     --swl-chart_fill: rgba(255, 210, 63, 0.15);
+}
+
+/* ===========================================================================
+ * TYPE — four font roles (display / body / num / accent), mixed independently
+ * by the font store (src/stores/font.store.ts), which pushes the active combo
+ * onto <html> as inline --swl-font_* vars. This :root block is the pre-JS BRAND
+ * DEFAULT (locked 2026-06-08 = "Clash Flair" + Martian Mono numerals) so the
+ * identity is right on first paint before the store runs. Mix live at /type.
+ * See [[swol-brand-type-taste]].
+ * ===========================================================================*/
+:root {
+    --swl-font_display: "Clash Display", "Archivo Black", system-ui, sans-serif;
+    --swl-font_body: "Satoshi", system-ui, sans-serif;
+    --swl-font_data: "Satoshi", ui-monospace, sans-serif;
+    --swl-font_accent: "Chillax", system-ui, sans-serif;
+    --swl-font_num: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }

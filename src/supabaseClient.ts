@@ -1,10 +1,12 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { USE_MOCK } from "@/lib/config";
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// In mock mode there is no client; auth.store / db route around it.
-export const supabase: SupabaseClient | null = USE_MOCK
-    ? null
-    : createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+        "Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. Copy .env.example to .env and point it at your Supabase stack (run `supabase start`).",
+    );
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

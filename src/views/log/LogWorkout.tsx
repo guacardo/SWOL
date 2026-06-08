@@ -1,9 +1,10 @@
-import { createSignal, For, Show } from "solid-js";
+import { createSignal, createResource, For, Show } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { useNavigate } from "@solidjs/router";
 import { Plus, X } from "lucide-solid";
 import { db } from "@/lib/db";
 import { getUser } from "@/stores/auth.store";
+import ExercisePicker from "./ExercisePicker";
 import styles from "./LogWorkout.module.css";
 
 interface DraftSet {
@@ -42,6 +43,11 @@ export default function LogWorkout() {
         blankExercise(),
     ]);
     const [saving, setSaving] = createSignal(false);
+
+    const [catalog] = createResource(
+        () => getUser()?.id ?? null,
+        (id) => db.listExercises(id),
+    );
 
     const addExercise = () =>
         setExercises(produce((xs) => xs.push(blankExercise())));
@@ -102,12 +108,11 @@ export default function LogWorkout() {
                 {(ex, i) => (
                     <div class={styles.card}>
                         <div class={styles.exHeader}>
-                            <input
-                                class={styles.input}
-                                placeholder="Exercise name"
+                            <ExercisePicker
                                 value={ex.name}
-                                onInput={(e) =>
-                                    setExercises(i(), "name", e.currentTarget.value)
+                                catalog={catalog() ?? []}
+                                onInput={(name) =>
+                                    setExercises(i(), "name", name)
                                 }
                             />
                             <Show when={exercises.length > 1}>

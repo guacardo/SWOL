@@ -1,12 +1,10 @@
 import { Show, createSignal } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import {
-    signInWith,
-    signInDev,
+    signInTestUser,
     signInPassword,
     signUpPassword,
 } from "@/stores/auth.store";
-import { USE_MOCK } from "@/lib/config";
 import styles from "./Login.module.css";
 
 export default function Login() {
@@ -18,8 +16,15 @@ export default function Login() {
     const [error, setError] = createSignal<string | null>(null);
     const [busy, setBusy] = createSignal(false);
 
-    const enterDev = () => {
-        signInDev();
+    const enterTest = async () => {
+        setError(null);
+        setBusy(true);
+        const err = await signInTestUser();
+        setBusy(false);
+        if (err) {
+            setError(`Test user: ${err}`);
+            return;
+        }
         navigate("/", { replace: true });
     };
 
@@ -37,32 +42,13 @@ export default function Login() {
         navigate("/", { replace: true });
     };
 
-    const oauth = async (provider: "google" | "github") => {
-        setError(null);
-        const err = await signInWith(provider);
-        if (err) setError(`${provider}: ${err}`);
-    };
-
     return (
         <div class={styles.page}>
             <div class={styles.card}>
                 <h1 class={styles.title}>SWOL</h1>
                 <p class={styles.sub}>Track lifts. Flex on friends. Politely.</p>
 
-                <Show
-                    when={!USE_MOCK}
-                    fallback={
-                        <>
-                            <button class={styles.provider} onClick={enterDev}>
-                                Enter (dev mode)
-                            </button>
-                            <p class={styles.fine}>
-                                No Supabase configured — running on the local mock data layer.
-                            </p>
-                        </>
-                    }
-                >
-                    <form class={styles.form} onSubmit={submit}>
+                <form class={styles.form} onSubmit={submit}>
                         <input
                             class={styles.input}
                             type="email"
@@ -112,13 +98,22 @@ export default function Login() {
                         <span>or</span>
                     </div>
 
-                    <button class={styles.provider} onClick={() => void oauth("google")}>
+                    <button
+                        class={styles.provider}
+                        onClick={() => void enterTest()}
+                        disabled={busy()}
+                    >
+                        Enter as test user
+                    </button>
+
+                    <button class={styles.provider} disabled title="Coming soon">
                         Continue with Google
+                        <span class={styles.soon}>soon</span>
                     </button>
-                    <button class={styles.provider} onClick={() => void oauth("github")}>
+                    <button class={styles.provider} disabled title="Coming soon">
                         Continue with GitHub
+                        <span class={styles.soon}>soon</span>
                     </button>
-                </Show>
             </div>
         </div>
     );

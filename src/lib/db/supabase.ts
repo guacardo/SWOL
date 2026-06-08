@@ -1,12 +1,12 @@
 import type { Workout, ExerciseLog, Exercise, Profile } from "@/lib/types";
 import { supabase } from "@/supabaseClient";
 import { normalizeName } from "./util";
-import type { NewWorkout, ExerciseInput, WorkoutPatch, ProfilePatch } from "./local";
+import type { NewWorkout, ExerciseInput, WorkoutPatch, ProfilePatch } from "./types";
 
 /**
- * Supabase-backed data layer. Same async surface as localDb so views are
- * backend-agnostic. All access goes through the authenticated client, so RLS
- * (auth.uid()) enforces ownership — see migrations/0001_init.sql.
+ * Supabase-backed data layer — the single backend behind `db`. All access goes
+ * through the authenticated client, so RLS (auth.uid()) enforces ownership —
+ * see migrations/0001_init.sql.
  *
  * The hydrated read shape (Workout -> logs -> exercise + sets) is produced by a
  * single PostgREST embedded select; the embedded resource is aliased to `logs`

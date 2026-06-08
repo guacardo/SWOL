@@ -59,17 +59,22 @@ export default function Dashboard() {
                             <ul class={styles.list}>
                                 <For each={workouts()}>
                                     {(w) => (
-                                        <li class={styles.item}>
-                                            <span class={styles.itemTitle}>
-                                                {w.title || "Workout"}
-                                            </span>
-                                            <span class={styles.muted}>
-                                                {new Date(
-                                                    w.performed_at,
-                                                ).toLocaleDateString()}{" "}
-                                                · {w.logs?.length ?? 0}{" "}
-                                                exercises
-                                            </span>
+                                        <li>
+                                            <A
+                                                href={`/workouts/${w.id}`}
+                                                class={styles.item}
+                                            >
+                                                <span class={styles.itemTitle}>
+                                                    {w.title || "Workout"}
+                                                </span>
+                                                <span class={styles.muted}>
+                                                    {new Date(
+                                                        w.performed_at,
+                                                    ).toLocaleDateString()}{" "}
+                                                    · {w.logs?.length ?? 0}{" "}
+                                                    exercises
+                                                </span>
+                                            </A>
                                         </li>
                                     )}
                                 </For>

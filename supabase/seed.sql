@@ -9,6 +9,7 @@ values
     (null, 'Barbell Bench Press',      'weighted', 'chest',     'barbell',   'lb', 5,    45, 405),
     (null, 'Incline Barbell Bench Press','weighted','chest',     'barbell',   'lb', 5,    45, 315),
     (null, 'Dumbbell Bench Press',     'weighted', 'chest',     'dumbbell',  'lb', 5,    10, 150),
+    (null, 'Smith Machine Bench Press','weighted', 'chest',     'machine',   'lb', 5,    45, 365),
     (null, 'Incline Dumbbell Press',   'weighted', 'chest',     'dumbbell',  'lb', 5,    10, 130),
     (null, 'Cable Fly',                'weighted', 'chest',     'cable',     'lb', 2.5,  5,  100),
     (null, 'Push-Up',                  'bodyweight','chest',    'bodyweight','lb', 0,    0,  0),
@@ -50,3 +51,40 @@ values
     (null, 'Rowing Machine',           'cardio',   'cardio',    'machine',   'm',  100,  0,  21000),
     (null, 'Stationary Bike',          'cardio',   'cardio',    'machine',   'm',  100,  0,  60000),
     (null, 'Jump Rope',                'duration', 'cardio',    'bodyweight','sec',10,   30, 3600);
+
+-- ---------------------------------------------------------------------------
+-- Local test user (dev convenience). A *real* auth.users row so it gets a real
+-- session and respects RLS — unlike the localStorage mock. The Login screen's
+-- "Enter as test user" button signs in as this account.
+--   email: test@swol.local   password: swolswol
+-- Fixed-string token columns avoid GoTrue's "NULL to string" login bug, and the
+-- on-signup trigger fills in the profile (display_name "Test Lifter").
+-- Local only: this anon/demo stack is never a real environment.
+-- ---------------------------------------------------------------------------
+do $$
+declare
+    uid uuid := '00000000-0000-0000-0000-0000000000aa';
+begin
+    if not exists (select 1 from auth.users where email = 'test@swol.local') then
+        insert into auth.users (
+            instance_id, id, aud, role, email, encrypted_password,
+            email_confirmed_at, created_at, updated_at,
+            raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous,
+            confirmation_token, recovery_token, email_change_token_new, email_change
+        ) values (
+            '00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated',
+            'test@swol.local', crypt('swolswol', gen_salt('bf')),
+            now(), now(), now(),
+            '{"provider":"email","providers":["email"]}', '{"full_name":"Test Lifter"}',
+            false, false, '', '', '', ''
+        );
+        insert into auth.identities (
+            provider_id, user_id, identity_data, provider,
+            last_sign_in_at, created_at, updated_at
+        ) values (
+            uid::text, uid,
+            jsonb_build_object('sub', uid::text, 'email', 'test@swol.local', 'email_verified', true),
+            'email', now(), now(), now()
+        );
+    end if;
+end $$;

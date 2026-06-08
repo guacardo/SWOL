@@ -28,12 +28,33 @@
 }
 
 .provider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     padding: 0.85rem 1rem;
     border-radius: var(--swl-radius-sm);
     border: 1px solid var(--swl-color_border);
     background: var(--swl-color_surface-2);
     color: var(--swl-color_text);
     font-weight: 600;
+    cursor: pointer;
+}
+
+.provider:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.soon {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    background: var(--swl-color_border);
+    color: var(--swl-color_text-muted);
 }
 
 .fine {

@@ -83,6 +83,15 @@
     border: 1px solid var(--swl-color_border);
     border-radius: var(--swl-radius-sm);
     padding: 0.75rem 1rem;
+    color: inherit;
+    transition:
+        border-color 0.15s,
+        background 0.15s;
+}
+
+.item:hover {
+    border-color: var(--swl-color_accent);
+    background: var(--swl-color_surface-2);
 }
 
 .itemTitle {

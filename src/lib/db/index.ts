@@ -1,12 +1,10 @@
-import { USE_MOCK } from "@/lib/config";
-import { localDb } from "./local";
 import { supabaseDb } from "./supabase";
 
 /**
- * Single data-layer entry point. Same async surface either way, so views are
- * backend-agnostic: real Supabase when configured, localStorage mock otherwise.
+ * Single data-layer entry point. Backed by Supabase (Postgres + RLS); views are
+ * backend-agnostic and only ever touch this `db`.
  */
-export const db = USE_MOCK ? localDb : supabaseDb;
+export const db = supabaseDb;
 
 export type {
     NewWorkout,
@@ -15,4 +13,4 @@ export type {
     ExerciseInput,
     WorkoutPatch,
     ProfilePatch,
-} from "./local";
+} from "./types";

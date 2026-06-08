@@ -1,7 +1,8 @@
 import { type ParentProps, For } from "solid-js";
 import { A } from "@solidjs/router";
-import { Dumbbell, ChartLine, Users, Plus, Palette, Library } from "lucide-solid";
+import { Dumbbell, ChartLine, Users, Plus, Palette, Library, Type } from "lucide-solid";
 import { cycleTheme } from "@/stores/theme.store";
+import { cyclePreset, activePreset } from "@/stores/font.store";
 import styles from "./AppShell.module.css";
 
 const NAV = [
@@ -10,6 +11,7 @@ const NAV = [
     { href: "/exercises", label: "Exercises", icon: Library },
     { href: "/trends", label: "Trends", icon: ChartLine },
     { href: "/friends", label: "Friends", icon: Users },
+    { href: "/type", label: "Type", icon: Type },
 ];
 
 /**
@@ -34,9 +36,18 @@ export default function AppShell(props: ParentProps) {
                         )}
                     </For>
                 </ul>
-                <button class={styles.themeBtn} onClick={cycleTheme} title="Cycle theme">
-                    <Palette size={20} />
-                </button>
+                <div class={styles.controls}>
+                    <button
+                        class={styles.themeBtn}
+                        onClick={cyclePreset}
+                        title={`Type: ${activePreset()?.label ?? "Custom mix"} — tap to cycle presets (mix at /type)`}
+                    >
+                        <Type size={20} />
+                    </button>
+                    <button class={styles.themeBtn} onClick={cycleTheme} title="Cycle color theme">
+                        <Palette size={20} />
+                    </button>
+                </div>
             </nav>
             <main class={styles.main}>{props.children}</main>
         </div>

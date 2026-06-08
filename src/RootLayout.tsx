@@ -1,6 +1,7 @@
 import { type ParentProps, Show, createEffect, onMount } from "solid-js";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { getTheme } from "@/stores/theme.store";
+import { applyFonts } from "@/stores/font.store";
 import { initAuth, getUser, isReady } from "@/stores/auth.store";
 import AppShell from "@/components/app-shell/AppShell";
 
@@ -12,6 +13,10 @@ export default function RootLayout(props: ParentProps) {
     createEffect(() => {
         document.documentElement.setAttribute("data-theme", getTheme());
     });
+
+    // ...and push the active font combo (display/body/num/accent) onto <html>
+    // as inline CSS vars. Re-runs whenever the mixer changes a role.
+    createEffect(applyFonts);
 
     onMount(() => {
         void initAuth();

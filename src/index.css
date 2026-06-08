@@ -12,11 +12,27 @@ body {
 }
 
 body {
-    font-family: var(--swl-font_primary);
+    font-family: var(--swl-font_body);
     color: var(--swl-color_text);
     background: var(--swl-color_bg);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+}
+
+/* Headings carry the loud display face app-wide, so a typeset swap is felt
+   everywhere — not just on the specimen page. */
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--swl-font_display);
+}
+
+/* Numeric inputs (weights/reps/HR in the logger) ride the numeral font (the
+   mono axis) with tabular figures so columns line up. */
+input[type="number"] {
+    font-family: var(--swl-font_num);
+    font-variant-numeric: tabular-nums;
 }
 
 #root {

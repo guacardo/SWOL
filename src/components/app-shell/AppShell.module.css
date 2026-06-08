@@ -25,15 +25,20 @@
 
 .brand {
     display: none;
+    font-family: var(--swl-font_display);
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.04em;
     color: var(--swl-color_accent);
+}
+
+.controls {
+    display: flex;
+    gap: 0.25rem;
 }
 
 .navList {
     display: flex;
     align-items: center;
-    justify-content: space-around;
     flex: 1;
     gap: 0.25rem;
     list-style: none;
