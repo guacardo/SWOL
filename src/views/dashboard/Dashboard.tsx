@@ -16,13 +16,10 @@ export default function Dashboard() {
         <div class={styles.page}>
             <header class={styles.header}>
                 <h1 class={styles.title}>Today</h1>
-                <p class={styles.sub}>Time to move some iron.</p>
+                <p class={styles.sub}>Pump up the jams. Why your legs be stumpin'?</p>
             </header>
 
-            <Show
-                when={isReady()}
-                fallback={<p class={styles.muted}>Loading…</p>}
-            >
+            <Show when={isReady()} fallback={<p class={styles.muted}>Loading…</p>}>
                 <Show
                     when={user()}
                     fallback={
@@ -48,31 +45,15 @@ export default function Dashboard() {
 
                     <section class={styles.recent}>
                         <h2 class={styles.h2}>Recent workouts</h2>
-                        <Show
-                            when={(workouts()?.length ?? 0) > 0}
-                            fallback={
-                                <p class={styles.muted}>
-                                    Nothing logged yet — go lift something.
-                                </p>
-                            }
-                        >
+                        <Show when={(workouts()?.length ?? 0) > 0} fallback={<p class={styles.muted}>Nothing logged yet — go lift something.</p>}>
                             <ul class={styles.list}>
                                 <For each={workouts()}>
                                     {(w) => (
                                         <li>
-                                            <A
-                                                href={`/workouts/${w.id}`}
-                                                class={styles.item}
-                                            >
-                                                <span class={styles.itemTitle}>
-                                                    {w.title || "Workout"}
-                                                </span>
+                                            <A href={`/workouts/${w.id}`} class={styles.item}>
+                                                <span class={styles.itemTitle}>{w.title || "Workout"}</span>
                                                 <span class={styles.muted}>
-                                                    {new Date(
-                                                        w.performed_at,
-                                                    ).toLocaleDateString()}{" "}
-                                                    · {w.logs?.length ?? 0}{" "}
-                                                    exercises
+                                                    {new Date(w.performed_at).toLocaleDateString()} · {w.logs?.length ?? 0} exercises
                                                 </span>
                                             </A>
                                         </li>
